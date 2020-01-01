@@ -16,7 +16,7 @@ const Note = ({note}) => {
   }, [] );
 
   return (
-       <div >
+       <div className="list-item">
          <h3>{note.title}</h3>
          <h4>{note.body}</h4>
          <p>{position.x}, {position.y} </p>

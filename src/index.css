@@ -1,0 +1,27 @@
+.example-enter {
+  opacity: 0.01;
+  max-height: 0px;
+}
+
+.example-enter.example-enter-active {
+  opacity: 1;
+  max-height: 1000px;
+  transition: opacity 2000ms ease-in, max-height 2000ms ease-in;
+}
+
+.example-leave {
+  opacity: 1;
+  max-height: 1000px;
+}
+
+.example-leave.example-leave-active {
+  opacity: 0.01;
+  max-height: 0.01px;
+  transition: all 2000ms ease-in;
+}
+
+.list-item {
+  overflow: hidden;
+  background-color: yellow;
+  margin: 10px;
+}

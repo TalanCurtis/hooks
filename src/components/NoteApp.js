@@ -7,9 +7,6 @@ import NotesContext from '../context/notes-context';
 const NoteApp = () => {
   const [notes, dispatch ] = useReducer(notesReducer, []);
 
-
-
-
   useEffect(()=>{
    const notes = JSON.parse(localStorage.getItem('notes'));
    if ( notes ){
@@ -24,7 +21,7 @@ const NoteApp = () => {
   return(
    <NotesContext.Provider value={{ notes , dispatch }}>
      <h1>note app</h1>
-     <NoteList />
+       <NoteList />
      <AddNoteForm />
    </NotesContext.Provider>
   );
