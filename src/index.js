@@ -1,31 +1,50 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import * as serviceWorker from './serviceWorker';
 
+const notesReducer = (state, action) => {
+  switch(action.type) {
+    case 'POPULATE_NOTES':
+      return action.notes;
+    case 'ADD_NOTE':
+      return [...state,
+               {title:action.title, body:action.body}
+      ];
+    case 'REMOVE_NOTE':
+      return state.filter((note)=>note.title !==action.title);
+    default:
+      return state;
+  }
+}
+
 // /*
 const NoteApp = () => {
-  const [notes, setNotes] = useState([]);
+  const [notes, dispatch ] = useReducer(notesReducer, []);
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
 
   const addNote = (e) => {
     e.preventDefault();
-    setNotes([
-      ...notes,
-      { title, body }
-    ]);
+    dispatch({
+      type:'ADD_NOTE',
+      title,
+      body
+    });
     setTitle('');
     setBody('');
   };
 
   const removeNote = (title) => {
-    setNotes(notes.filter((note)=>note.title !==title));
+    dispatch({
+      type:'REMOVE_NOTE',
+      title
+    })
   };
 
   useEffect(()=>{
-   const notesData = JSON.parse(localStorage.getItem('notes'));
-   if ( notesData ){
-    setNotes(notesData);
+   const notes = JSON.parse(localStorage.getItem('notes'));
+   if ( notes ){
+    dispatch({type:'POPULATE_NOTES',  notes});
    }
   }, []);
 
@@ -37,11 +56,7 @@ const NoteApp = () => {
    <div>
      <h1>note app</h1>
      {notes.map((note, i)=>(
-       <div key={i}>
-         <h3>{note.title}</h3>
-         <h4>{note.body}</h4>
-         <button onClick={()=>removeNote(note.title)}>X</button>
-       </div>
+       <Note key={i} note={note} removeNote={removeNote}/>
      ))}
      <p> Add Note</p>
      <form onSubmit={addNote}>
@@ -55,49 +70,23 @@ const NoteApp = () => {
 //*/
 
 
-/*
-const App = (props) => {
-  const [count, setCount] = useState(props.count);
-  const [text, setText ] = useState(''); 
-
-  // useEffect second arg is an array to trigger only when something specific changes.
+const Note = ({note, removeNote}) => {
   useEffect(()=>{
-    console.log("hellow");
-    document.title = count;
-  }, [count]);
-
-  useEffect(()=>{
-    // used for fetching data. like component did mount.
-    console.log("this should only run once");
-  }, []);
-
-
-  const increment = () => {
-    setCount(count + 1);
-  };
-  const decrement = () => {
-    setCount(count - 1);
-  };
-  const reset = () => {
-    setCount(props.count);
-  };
+    console.log('Setting up effect');
+    return () => {
+      console.log('cleaning up effect.')
+    }
+  }, [] );
 
   return (
-    <div>
-      <p>The current { text || 'count' } is {count}</p>
-      <button onClick={increment}>+1</button>
-      <button onClick={decrement}>-1</button>
-      <button onClick={reset}>reset</button>
-      <input value={text} onChange={(e)=>setText(e.target.value)}></input>
-    </div>
+       <div >
+         <h3>{note.title}</h3>
+         <h4>{note.body}</h4>
+         <button onClick={()=>removeNote(note.title)}>X</button>
+       </div>
   );
 };
 
-App.defaultProps = {
-  count: 0,
-};
-
-//*/
 
 ReactDOM.render(<NoteApp />, document.getElementById('root'));
 
